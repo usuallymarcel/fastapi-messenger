@@ -23,7 +23,8 @@ html = """
         <script>
             var client_id = Date.now()
             document.querySelector("#ws-id").textContent = client_id;
-            var ws = new WebSocket('ws://' + location.host + `/ws/${client_id}`);
+            var protocol = (location.protocol === 'https:' ? 'wss:' : 'ws:')
+            var ws = new WebSocket(`${protocol}//${location.host}/ws/${client_id}`);
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -33,10 +34,14 @@ html = """
                 message.scrollIntoView({behavior: 'smooth', block: 'end'})
             };
             function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
                 event.preventDefault()
+                var input = document.getElementById("messageText")
+                try {
+                    ws.send(input.value)
+                } catch (e) {
+                    console.error('WebSocket send failed', e)
+                }
+                input.value = ''
             }
         </script>
     </body>
