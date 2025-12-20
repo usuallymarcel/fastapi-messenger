@@ -11,13 +11,15 @@ html = """
     </head>
     <body>
         <h1>WebSocket Chat</h1>
+        <div style="height:300px;overflow-y:auto;border:1px solid black;padding:10px;">
+        <ul id='messages'>
+        </ul>
+        </div>
         <h2>Your ID: <span id="ws-id"></span></h2>
         <form action="" onsubmit="sendMessage(event)">
             <input type="text" id="messageText" autocomplete="off"/>
             <button>Send</button>
         </form>
-        <ul id='messages'>
-        </ul>
         <script>
             var client_id = Date.now()
             document.querySelector("#ws-id").textContent = client_id;
@@ -28,6 +30,7 @@ html = """
                 var content = document.createTextNode(event.data)
                 message.appendChild(content)
                 messages.appendChild(message)
+                message.scrollIntoView({behavior: 'smooth', block: 'end'})
             };
             function sendMessage(event) {
                 var input = document.getElementById("messageText")
@@ -61,7 +64,7 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
-
+messages = []
 
 @app.get("/")
 async def get():
@@ -70,12 +73,21 @@ async def get():
 
 @app.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
+    client_join_msg = f"Client #{client_id} joined the chat"
+    client_leave_msg = f"Client #{client_id} left the chat"
+
     await manager.connect(websocket)
+    for msg in messages:
+        await manager.send_personal_message(msg, websocket)
+    await manager.broadcast(client_join_msg)
+    messages.append(client_join_msg)
     try:
         while True:
             data = await websocket.receive_text()
-            # await manager.send_personal_message(f"You wrote: {data}", websocket)
-            await manager.broadcast(f"Client #{client_id} says: {data}")
+            client_says_msg = f"Client #{client_id} says: {data}"
+            await manager.broadcast(client_says_msg)
+            messages.append(client_says_msg)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-        await manager.broadcast(f"Client #{client_id} left the chat")
+        await manager.broadcast(client_leave_msg)
+        messages.append(client_leave_msg)
