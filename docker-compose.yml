@@ -25,6 +25,10 @@ services:
       context: ./api
     container_name: fastapi
     restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - db
     labels:
         - "traefik.enable=true"
         - "traefik.http.routers.api.rule=Host(`api.marcel.co.nz`)"
@@ -34,6 +38,20 @@ services:
         - "traefik.http.services.api.loadbalancer.server.port=8000"
     networks:
       - proxy
+
+  db:
+    image: postgres
+    container_name: postgres_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - proxy
+
+volumes:
+  postgres_data:
 
 networks:
   proxy:

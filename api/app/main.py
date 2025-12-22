@@ -1,5 +1,9 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
+import os
+
+DATABASE_URL = os.environ["DATABASE_URL"]
+
 
 app = FastAPI()
 
