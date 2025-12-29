@@ -47,6 +47,8 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql
+    ports:
+      - 5432:5432
     networks:
       - proxy
 

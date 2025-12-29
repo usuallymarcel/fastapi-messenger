@@ -4,8 +4,11 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import os
 from app.config import settings
+from app.routes import users
 
 app = FastAPI()
+
+app.include_router(users.router)
 
 class ConnectionManager:
     def __init__(self):
