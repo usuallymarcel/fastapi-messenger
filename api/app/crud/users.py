@@ -10,3 +10,6 @@ def create_user(db: Session, email: str, name: str):
     db.commit()
     db.refresh(user)
     return user
+
+def get_users(db: Session):
+    return db.query(User).all()
