@@ -1,7 +1,11 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, Request
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from app.utils.session_token import get_session_from_request
+
+from app.dependencies import get_db
 from pathlib import Path
 import os
 from app.config import settings
@@ -29,7 +33,9 @@ async def index():
     return FileResponse(BASE_DIR / "static" / "login" / "index.html")
 
 @app.get("/chat")
-async def chat_screen():
+async def chat(request: Request, db: Session = Depends(get_db)):
+
+    get_session_from_request(db, request)
     return FileResponse(BASE_DIR / "static" / "chat" / "index.html" )
 
 @app.get("/config.js")
