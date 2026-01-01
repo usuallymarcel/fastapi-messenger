@@ -32,17 +32,18 @@ class ConnectionManager:
 manager = ConnectionManager()
 messages = []
 
-@router.websocket("/")
+@router.websocket("/chat")
 async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(get_db)):
     # client_join_msg = f"Client #{client_id} joined the chat"
     # client_leave_msg = f"Client #{client_id} left the chat"
 
     session = await get_session_from_websocket(db, websocket)
-    user = get_user_by_id(session.user_id)
 
     if not session:
         await websocket.close(code=1008)
         return
+    
+    user = get_user_by_id(db, session.user_id)
     
     await manager.connect(websocket)
     for msg in messages:
