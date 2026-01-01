@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.querySelector("#ws-id").textContent = data.username;
 
     const protocol = location.protocol === "https:" ? "wss://" : "ws://";
-    ws = new WebSocket(protocol + location.host + `/ws`);
+    ws = new WebSocket(protocol + location.host + `/ws/`);
 
     ws.onmessage = function(event) {
         const messages = document.getElementById('messages')
