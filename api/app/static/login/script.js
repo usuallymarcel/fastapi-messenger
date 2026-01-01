@@ -12,8 +12,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     const data = await res.json()
     console.log(data)
 
+    // if (data.verified === true) {
+    //     showLogoutButton()
+    // }
+
     if (data.verified === true) {
-        showLogoutButton()
+        window.location.href = "/chat"
     }
 })
 
@@ -62,4 +66,8 @@ async function authenticate(type) {
     const data = await res.json()
 
     console.log(data)
+
+    if (data.verified === true) {
+        window.location.href = "/chat"
+    }
 }
