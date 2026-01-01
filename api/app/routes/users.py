@@ -64,7 +64,7 @@ def sign_up(data: credentials, response: Response, db: Session = Depends(get_db)
         max_age=60 * 60 * 24
     )
 
-    return {"created": True, "message": "Account creation Succesful"}
+    return {"verified": True, "created": True, "message": "Account creation Succesful"}
     
 @router.get("/check_session")
 def check_session(request: Request, db: Session = Depends(get_db)):
