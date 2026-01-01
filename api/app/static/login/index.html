@@ -4,12 +4,14 @@
         <title>Chat</title>
     </head>
     <body>
-        <div>
-        </div>
+        <!-- <div id="">
+        </div> -->
         <input type="text" id="email"/>
         <input type="text" id="password">
         <br>
-        <button onclick="login()">Login</button><button onclick="sign_up()">Sign up</button>
+        <button onclick="authenticate('login')">Login</button><button onclick="authenticate('sign_up')">Sign up</button>
+        <div id="logout-div"></div>
+        
         <script src="/config.js"></script>
         <script src="static/login/script.js"></script>
         <style src="static/login/styles.css"></style>
