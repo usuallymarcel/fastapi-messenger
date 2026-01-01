@@ -2,16 +2,16 @@ let ws;
 const API_URL = window.ENV.API_URL
 
 document.addEventListener('DOMContentLoaded', async function() {
-    const res = await fetch(API_URL + '/users/username', {
-        credentials: "include"
-    }).catch(err => {
-        console.error("Error: ", err)
-    })
+    // const res = await fetch(API_URL + '/users/username', {
+    //     credentials: "include"
+    // }).catch(err => {
+    //     console.error("Error: ", err)
+    // })
 
-    const data = await res.json()
+    // const data = await res.json()
     
     
-    document.querySelector("#ws-id").textContent = data.username;
+    // document.querySelector("#ws-id").textContent = data.username;
 
     const protocol = location.protocol === "https:" ? "wss://" : "ws://";
     ws = new WebSocket(protocol + location.host + `/ws/chat`);
