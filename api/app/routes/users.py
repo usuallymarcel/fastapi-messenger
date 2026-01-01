@@ -68,8 +68,7 @@ def sign_up(data: credentials, response: Response, db: Session = Depends(get_db)
     
 @router.get("/check_session")
 def check_session(request: Request, db: Session = Depends(get_db)):
-    session = get_session_from_request(db, request)
-    refresh_session_if_needed(db, session)
+    get_session_from_request(db, request)
     return {"verified": True, "message": "Session valid"}
 
 @router.post("/logout")
@@ -81,10 +80,10 @@ def logout(request: Request, response: Response, db: Session = Depends(get_db)):
     response.delete_cookie("session_id")
     return {"ok": True, "logged out": True}
 
-@router.get("/username")
+@router.get("/user")
 def logout(request: Request, db: Session = Depends(get_db)):
     session = get_session_from_request(db, request)
     user = get_user_by_id(db, session.user_id)
 
-    return {"username": user.name}
+    return {"username": user.name, "email": user.email, "id": user.id}
     
