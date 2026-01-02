@@ -1,7 +1,11 @@
 let ws
 const API_URL = window.ENV.API_URL
 
-ws = new WebSocket(location.protocol === "https:" ? "wss://" : "ws://" + location.host + `/ws/chat`)
+ws = new WebSocket(
+    (location.protocol === "https:" ? "wss://" : "ws://") +
+    location.host +
+    "/ws/chat"
+)
 
 ws.onmessage = function(event) {
     // const messages = document.getElementById('messages')
