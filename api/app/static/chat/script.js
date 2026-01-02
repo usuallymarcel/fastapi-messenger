@@ -59,7 +59,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     showLogoutButton()
 })
 
-function sendMessage() {
+function sendMessage(event) {
+    event.preventDefault()
+    
     const input = document.getElementById("messageText");
     const friends = document.getElementsByName('friends');
 

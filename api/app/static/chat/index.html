@@ -32,8 +32,15 @@
         <ul id='messages'>
         </ul>
         </div><br>
-        <input type="text" id="messageText" placeholder="Message" autocomplete="off"/>
-        <button onclick="sendMessage()">Send</button>
+        <form onsubmit="sendMessage(event)">
+            <input
+                type="text"
+                id="messageText"
+                placeholder="Message"
+                autocomplete="off"
+            />
+            <button type="submit">Send</button>
+        </form>
         <script src="/config.js"></script>
         <script src="static/chat/script.js"></script>
     </body>
