@@ -17,9 +17,9 @@ router = APIRouter(prefix="/users", tags=["users"])
     
 #     return create_user(db, user.email, user.name)
 
-@router.get("/")
-def get_all_users(db: Session = Depends(get_db)):
-    return get_users(db)
+# @router.get("/")
+# def get_all_users(db: Session = Depends(get_db)):
+#     return get_users(db)
 
 @router.post("/login")
 def login(data: credentials, response: Response, db: Session = Depends(get_db)):
