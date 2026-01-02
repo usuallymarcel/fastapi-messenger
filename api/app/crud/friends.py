@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-# from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_
 from app.models.friends import Friend
 
 def get_friend_by_id(db: Session, user_id: int, friend_id: int):
@@ -22,4 +22,7 @@ def create_friend(db: Session, user_id: int, friend_id: int):
     db.commit()
     db.refresh(friend)
     return friend
+
+def get_all_friends_by_id(db: Session, user_id: int):
+    return db.query(Friend).filter(or_(Friend.user_id_1 == user_id, Friend.user_id_2 == user_id)).all()
 

@@ -21,15 +21,9 @@ class FriendRequest(Base):
         nullable=False,
     )
 
-    user_id_1: Mapped[int] = mapped_column(
+    receiver_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("users.id", ondelete="CASCADE"), 
-        nullable=False
-    )
-
-    user_id_2: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False
     )
 
@@ -53,5 +47,5 @@ class FriendRequest(Base):
     )
 
     __table_args__ = (
-        UniqueConstraint("user_id_1", "user_id_2", name="uq_friend_request_pair"),
+        UniqueConstraint("sender_id", "receiver_id", name="uq_friend_request_pair"),
     )

@@ -2,25 +2,39 @@
 <html>
     <head>
         <title>Chat</title>
+        <link rel="stylesheet" href="/static/chat/styles.css">
     </head>
     <body>
-        <div style="height:300px;overflow-y:auto;border:1px solid black;padding:10px;">
+        <div id="logout-div"></div>
+        <!-- <div style="height:300px;overflow-y:auto;border:1px solid black;padding:10px;">
         <ul id='messages'>
         </ul>
-        </div>
+        </div> -->
         <p id="ws-id"></p>
-        <br>
-        <form action="" onsubmit="sendMessage(event)">
+        <!-- <br> -->
+        <!-- <form action="" onsubmit="sendMessage(event)">
             <input type="text" id="messageText" placeholder="Message" autocomplete="off"/>
             <button>Send</button>
-        </form>
+        </form> -->
         <br>
         <div id="friend-request-div">
             <input type="text" id="friend-id-input" placeholder="ID"/>
             <button onclick="sendFriendRequest()">Send Friend Request</button>
+            <ul id="pending-received-requests"></ul>
         </div>
+        <div>
+            <ul id="pending-sent-requests">
+            </ul>
+        </div>
+        <div id="friends">
+        </div>
+        <div style="height:300px;overflow-y:auto;border:1px solid black;padding:10px;">
+        <ul id='messages'>
+        </ul>
+        </div><br>
+        <input type="text" id="messageText" placeholder="Message" autocomplete="off"/>
+        <button onclick="sendMessage()">Send</button>
         <script src="/config.js"></script>
         <script src="static/chat/script.js"></script>
-        <style src="static/chat/styles.css"></style>
     </body>
 </html>

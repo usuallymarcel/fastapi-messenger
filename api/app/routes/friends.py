@@ -1,12 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, Request
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
 from app.schemas.friend_request import FriendRequestSchema
-from app.crud.users import get_user_by_email, create_user, get_users, get_user_by_id
-from app.crud.session_tokens import create_session
-from app.crud.friend_request import create_friend_request, get_friend_request_by_id
-from app.utils.credentials import verify_password
+from app.crud.friend_request import create_friend_request
 from app.utils.session_token import get_session_from_request
 
 router = APIRouter(prefix="/friends", tags=["friends"])
@@ -75,11 +72,11 @@ router = APIRouter(prefix="/friends", tags=["friends"])
 #     response.delete_cookie("session_id")
 #     return {"ok": True, "logged out": True}
 
-@router.post("/request")
-def logout(data: FriendRequestSchema, request: Request, db: Session = Depends(get_db)):
-    session = get_session_from_request(db, request)
-    # user = get_user_by_id(db, session.user_id)
-    create_friend_request(db, session.user_id, data.friend_id)
+# @router.post("/request")
+# def logout(data: FriendRequestSchema, request: Request, db: Session = Depends(get_db)):
+#     session = get_session_from_request(db, request)
+#     # user = get_user_by_id(db, session.user_id)
+#     create_friend_request(db, session.user_id, data.friend_id)
 
-    return {"ok": True, "message": "created friend request"}
+#     return {"ok": True, "message": "created friend request"}
     

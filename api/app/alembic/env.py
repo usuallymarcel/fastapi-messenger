@@ -28,6 +28,7 @@ from app.models.user import User
 from app.models.session_token import Session_Token
 from app.models.friends import Friend
 from app.models.friend_request import FriendRequest
+from app.models.messages import Message
 from app.config import settings
 
 target_metadata = Base.metadata
