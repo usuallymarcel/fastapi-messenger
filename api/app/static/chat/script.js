@@ -16,7 +16,11 @@ ws.onmessage = function(event) {
             showIncomingRequest(data)
             break
         case "friend_request_accepted":
+            removeRequestItem(data.request_id)
             addFriend(data)
+            break
+        case "friend_request_rejected":
+            removeRequestItem(data.request_id)
             break
         case "friend_request_sent":
             showSentRequest(data)
@@ -144,7 +148,10 @@ function showIncomingRequest(data) {
     const requests = document.getElementById('pending-sent-requests')
 
     const item = document.createElement('li')
-    item.classList.add('friend-request')
+    item.classList.add('friend-request', 'friend-request--incoming')
+
+
+    item.dataset.requestId = data.request_id
 
     const info = document.createElement('div')
     info.classList.add('friend-request__info')
@@ -172,9 +179,10 @@ function showIncomingRequest(data) {
 function showSentRequest(data) {
     const requests = document.getElementById('pending-received-requests')
     const request = document.createElement('li')
+    request.classList.add('friend-request', 'friend-request--sent')
+    request.dataset.requestId = data.request_id
     request.textContent = `Pending ${data.username}, ID: ${data.to_user_id}`
     requests.appendChild(request)
-    // message.scrollIntoView({ behavior: 'smooth', block: 'end' })
 }
 
 function acceptFriendRequest(requestId) {
@@ -239,4 +247,14 @@ function showReceivedMessage(data) {
 function clearMessages() {
     const messagesDiv = document.getElementById('messages');
     messagesDiv.innerHTML = '';
+}
+
+function removeRequestItem(requestId) {
+    const item = document.querySelector(
+        `.friend-request[data-request-id="${requestId}"]`
+    )
+
+    if (item) {
+        item.remove()
+    }
 }

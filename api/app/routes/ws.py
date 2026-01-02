@@ -130,6 +130,7 @@ async def handle_friend_accept(db: Session, user_id: int, data: dict):
         request.sender_id,
         {
             "type": "friend_request_accepted",
+            "request_id": request.id,
             "user_id": request.receiver_id,
             "username": receiver.email
         }
@@ -138,6 +139,7 @@ async def handle_friend_accept(db: Session, user_id: int, data: dict):
         request.receiver_id,
         {
             "type": "friend_request_accepted",
+            "request_id": request.id,
             "user_id": request.sender_id,
             "username": sender.email
         }
@@ -148,7 +150,8 @@ async def handle_friend_reject(db: Session, user_id: int, data: dict):
 
     request = get_friend_request(db, request_id)
 
-    if request.receiver_id != user_id:
+
+    if not request or request.receiver_id != user_id:
         return
     
     update_friend_request(db, request, FriendStatus.REJECTED)
@@ -157,7 +160,15 @@ async def handle_friend_reject(db: Session, user_id: int, data: dict):
         request.sender_id,
         {
             "type": "friend_request_rejected",
-            "user_id": user_id,
+            "request_id": request.id
+        }
+    )
+
+    await manager.send(
+        request.receiver_id,
+        {
+            "type": "friend_request_rejected",
+            "request_id": request.id,
         }
     )
     
