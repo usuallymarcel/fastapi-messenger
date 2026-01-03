@@ -4,6 +4,27 @@ from sqlalchemy.orm import Session
 from app.crud.session_tokens import get_session_by_id
 from datetime import datetime, timezone, timedelta
 
+def is_session_valid(db: Session, request: Request) -> bool:
+    session_id = request.cookies.get("session_id")
+
+    if not session_id:
+        return False
+    
+    session = get_session_by_id(db, session_id)
+
+    if not session:
+        return False
+    
+    if session.expires_at < datetime.now(timezone.utc):
+        db.delete(session)
+        db.commit()
+        db.refresh()
+        return False
+    
+    refresh_session_if_needed(db, session)
+
+    return True
+
 def get_session_from_request(db: Session, request: Request) -> Session_Token:
     session_id = request.cookies.get("session_id")
     if not session_id:

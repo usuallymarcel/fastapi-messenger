@@ -1,9 +1,9 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, Request
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from app.utils.session_token import get_session_from_request
+from app.utils.session_token import is_session_valid
 
 from app.dependencies import get_db
 from pathlib import Path
@@ -36,8 +36,13 @@ async def index():
 @app.get("/chat")
 async def chat(request: Request, db: Session = Depends(get_db)):
 
-    get_session_from_request(db, request)
-    return FileResponse(BASE_DIR / "static" / "chat" / "index.html" )
+    session_valid = is_session_valid(db, request)
+    
+    if session_valid:
+        return FileResponse(BASE_DIR / "static" / "chat" / "index.html" )
+    
+    return RedirectResponse(url="/", status_code=302)
+    
 
 @app.get("/config.js")
 async def config_js():
