@@ -57,31 +57,31 @@ document.addEventListener('DOMContentLoaded', async function() {
 function sendMessage(event) {
     event.preventDefault()
     
-    const input = document.getElementById("messageText");
-    const friends = document.getElementsByName('friends');
+    const input = document.getElementById("messageText")
+    const friends = document.getElementsByName('friends')
 
-    let selectedFriendId = null;
+    let selectedFriendId = null
     for (const f of friends) {
         if (f.checked) {
-            selectedFriendId = f.value;
-            break;
+            selectedFriendId = f.value
+            break
         }
     }
 
     if (!selectedFriendId) {
-        alert("Please select a friend to send a message to.");
-        return;
+        alert("Please select a friend to send a message to.")
+        return
     }
 
-    const messageText = input.value.trim();
+    const messageText = input.value.trim()
     if (!messageText) {
-        alert("Message cannot be empty.");
-        return;
+        alert("Message cannot be empty.")
+        return
     }
 
     if (!ws || ws.readyState !== WebSocket.OPEN) {
-        console.error('WebSocket is not open');
-        return;
+        console.error('WebSocket is not open')
+        return
     }
 
     try {
@@ -89,12 +89,12 @@ function sendMessage(event) {
             type: "message",
             to_user_id: selectedFriendId,
             content: messageText
-        }));
+        }))
     } catch (e) {
-        console.error('WebSocket send failed', e);
+        console.error('WebSocket send failed', e)
     }
 
-    input.value = '';
+    input.value = ''
 }
 
 async function sendFriendRequest() {
@@ -104,31 +104,30 @@ async function sendFriendRequest() {
 }
 
 function addFriend(data) {
-    const friendsDiv = document.getElementById('friends');
-    console.log(data)
+    const friendsDiv = document.getElementById('friends')
 
-    const label = document.createElement('label');
-    label.classList.add('friend-item');
+    const label = document.createElement('label')
+    label.classList.add('friend-item')
 
-    const input = document.createElement('input');
-    input.type = 'radio';
-    input.name = 'friends';          //grouping
-    input.value = data.user_id;
+    const input = document.createElement('input')
+    input.type = 'radio'
+    input.name = 'friends'
+    input.value = data.user_id
+
+    const text = document.createElement('span')
+    text.textContent = data.username
 
     input.addEventListener('change', () => {
-        clearMessages();
-        console.log("change friend id", input.value);
-
+        clearMessages()
+        text.textContent = data.username //clear notification
         ws.send(JSON.stringify({
             type: "get_messages",
             friend_id: input.value
-        }));
-    });
+        }))
+    })
 
-    const text = document.createTextNode(data.username);
-
-    label.append(input, text);
-    friendsDiv.append(label);
+    label.append(input, text)
+    friendsDiv.append(label)
 }
 
 function showIncomingRequest(data) {
@@ -203,37 +202,48 @@ async function logout() {
 }
 
 function showMessage(data) {
-    const messagesDiv = document.getElementById('messages');
-    const li = document.createElement('li');
-    li.textContent = data.content;
-    messagesDiv.appendChild(li);
-    li.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    const messagesDiv = document.getElementById('messages')
+    const li = document.createElement('li')
+    li.textContent = data.content
+    messagesDiv.appendChild(li)
+    li.scrollIntoView({ behavior: 'smooth', block: 'end' })
 }
 
 function showReceivedMessage(data) {
-    const messagesDiv = document.getElementById('messages');
+    const messagesDiv = document.getElementById('messages')
 
     //only show if this friend is currently selected
-    const friends = document.getElementsByName('friends');
-    let selectedFriendId = null;
+    const friends = document.getElementsByName('friends')
+    let selectedFriendId = null
+
     for (const f of friends) {
         if (f.checked) {
-            selectedFriendId = f.value;
-            break;
+            selectedFriendId = f.value
+            break
         }
     }
 
-    if (selectedFriendId !== String(data.from)) return;
+    if (selectedFriendId !== String(data.from)) {
+        const input = [...friends].find(f => f.value === String(data.from))
+        if (input) {
+            const label = input.parentElement
+            const span = label.querySelector('span')
+            if (!span.textContent.endsWith(' ***')) {
+                span.textContent += ' ***'
+            }
+        }
+        return
+    }
 
-    const li = document.createElement('li');
-    li.textContent = data.content;
-    messagesDiv.appendChild(li);
-    li.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    const li = document.createElement('li')
+    li.textContent = data.content
+    messagesDiv.appendChild(li)
+    li.scrollIntoView({ behavior: 'smooth', block: 'end' })
 }
 
 function clearMessages() {
-    const messagesDiv = document.getElementById('messages');
-    messagesDiv.innerHTML = '';
+    const messagesDiv = document.getElementById('messages')
+    messagesDiv.innerHTML = ''
 }
 
 function removeRequestItem(requestId) {
