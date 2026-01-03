@@ -31,3 +31,10 @@ def create_message(db: Session, sender_id: int, receiver_id: int, content: str):
     db.commit()
     db.refresh(message)
     return message
+
+def update_message_read(db: Session, message_id: int, read_status: bool):
+    message = db.query(Message).filter(Message.id == message_id).first()
+    if message:
+        message.read = read_status
+
+        db.commit()

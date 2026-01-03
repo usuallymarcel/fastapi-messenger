@@ -8,11 +8,6 @@ ws = new WebSocket(
 )
 
 ws.onmessage = function(event) {
-    // const messages = document.getElementById('messages')
-    // const message = document.createElement('li')
-    // message.textContent = event.data
-    // messages.appendChild(message)
-    // message.scrollIntoView({ behavior: 'smooth', block: 'end' })
     const data = JSON.parse(event.data)
 
     switch (data.type) {
@@ -105,20 +100,6 @@ function sendMessage(event) {
 async function sendFriendRequest() {
     const input = document.getElementById("friend-id-input")
     
-    // const res = await fetch(API_URL + '/friends/request', {
-    //     credentials: "include",
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({ friend_id: input.value })
-    // }).catch(err => {
-    //     console.error("Error: ", err)
-    // })
-
-    // const data = await res.json()
-
-    // console.log(data)
     ws.send(JSON.stringify({"type": "friend_request", "to_user_id": input.value}))
 }
 
