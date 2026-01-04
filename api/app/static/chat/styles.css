@@ -47,3 +47,11 @@
 .friend-item:hover {
     background: #2a2a2a;
 } */
+
+
+.message-count {
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 6px;
+}

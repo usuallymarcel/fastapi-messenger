@@ -114,21 +114,22 @@ function addFriend(data) {
     input.name = 'friends'
     input.value = data.user_id
     
-    const text = document.createElement('p')
+    const name = document.createElement('span')
     const count = document.createElement('span')
-    
-    text.textContent = data.username
+    count.classList.add('message-count')
+    count.textContent = ''
+    name.textContent = data.username
 
     input.addEventListener('change', () => {
         clearMessages()
-        text.textContent = data.username //clear notification
+        count.textContent = '' //clear notification
         ws.send(JSON.stringify({
             type: "get_messages",
             friend_id: input.value
         }))
     })
 
-    label.append(input, text)
+    label.append(input, name, count)
     friendsDiv.append(label)
 }
 
@@ -229,10 +230,9 @@ function showReceivedMessage(data) {
         const input = [...friends].find(f => f.value === String(data.from))
         if (input) {
             const label = input.parentElement
-            const span = label.querySelector('span')
-            if (!span.textContent.endsWith(' ***')) {
-                span.textContent += ' ***'
-            }
+            const count = label.querySelector('.message-count')
+            const current = parseInt(count.textContent || '0', 10)
+            count.textContent = current + 1
         }
         return
     }
