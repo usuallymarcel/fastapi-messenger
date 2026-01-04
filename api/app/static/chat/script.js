@@ -113,8 +113,10 @@ function addFriend(data) {
     input.type = 'radio'
     input.name = 'friends'
     input.value = data.user_id
-
-    const text = document.createElement('span')
+    
+    const text = document.createElement('p')
+    const count = document.createElement('span')
+    
     text.textContent = data.username
 
     input.addEventListener('change', () => {
