@@ -42,3 +42,5 @@ docker build -t messenger:latest .
 docker run -d -p 8000:8000  --name messenger-api --env-file ../.env messenger:latest
 
 cd ../build-scripts
+
+docker logs -f messenger-api
