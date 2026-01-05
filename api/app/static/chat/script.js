@@ -117,7 +117,7 @@ function addFriend(data) {
     const name = document.createElement('span')
     const count = document.createElement('span')
     count.classList.add('message-count')
-    count.textContent = ''
+    count.textContent = data.unread_count
     name.textContent = data.username
 
     input.addEventListener('change', () => {
@@ -200,7 +200,6 @@ async function logout() {
 
     const data = await res.json()
 
-    console.log(data)
     window.location.href = "/"
 }
 
@@ -236,7 +235,8 @@ function showReceivedMessage(data) {
         }
         return
     }
-
+    // FIX THIS
+    ws.send(JSON.stringify({"type": "message_read", "message_id": data.message_id}))
     const li = document.createElement('li')
     li.textContent = data.content
     messagesDiv.appendChild(li)
