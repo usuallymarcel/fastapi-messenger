@@ -8,7 +8,7 @@ def get_messages_for_user_and_friend(
     user_id: int, 
     friend_id: int,
     before: datetime | None = None,
-    take: int = 25,
+    take: int = 10,
 ):
     query = db.query(Message).filter(
         or_(
@@ -44,6 +44,8 @@ def get_messages_for_user_and_friend(
             .filter(Message.id.in_(message_ids))
             .update({Message.read: True}, synchronize_session=False)
         )
+    
+    db.commit()
 
     return list(reversed(messages))
 

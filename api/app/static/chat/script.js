@@ -235,7 +235,6 @@ function showReceivedMessage(data) {
         }
         return
     }
-    // FIX THIS
     ws.send(JSON.stringify({"type": "message_read", "message_id": data.message_id}))
     const li = document.createElement('li')
     li.textContent = data.content
