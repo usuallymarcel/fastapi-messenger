@@ -6,14 +6,13 @@ from app.database import Base
 
 
 class GroupMessage(Base):
-
     __tablename__ = "group_messages"
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
     group_id: Mapped[int] = mapped_column(
         Integer,
-        ForeignKey("group.id", ondelete="CASCADE"),
+        ForeignKey("groups.id", ondelete="CASCADE"),
         nullable=False
     )
 
@@ -39,5 +38,5 @@ class GroupMessage(Base):
             "ix_group_messages_group_created",
             "group_id",
             "created_at"
-        )
+        ),
     )
