@@ -6,42 +6,45 @@
     </head>
     <body>
         <div id="logout-div"></div>
-        <!-- <div style="height:300px;overflow-y:auto;border:1px solid black;padding:10px;">
-        <ul id='messages'>
-        </ul>
-        </div> -->
-        <p id="ws-id"></p>
-        <!-- <br> -->
-        <!-- <form action="" onsubmit="sendMessage(event)">
-            <input type="text" id="messageText" placeholder="Message" autocomplete="off"/>
-            <button>Send</button>
-        </form> -->
         <br>
-        <div id="friend-request-div">
-            <input type="text" id="friend-id-input" placeholder="ID"/>
-            <button onclick="sendFriendRequest()">Send Friend Request</button>
-            <ul id="pending-received-requests"></ul>
-        </div>
-        <div>
-            <ul id="pending-sent-requests">
+        <button onclick="toggleGroup()" id="group-toggle-button">Open Groups</button>    
+        <br>
+        <div id="friends-div">
+            <p id="ws-id"></p>
+            <br>
+            <div id="friend-request-div">
+                <input type="text" id="friend-id-input" placeholder="ID"/>
+                <button onclick="sendFriendRequest()">Send Friend Request</button>
+                <ul id="pending-received-requests"></ul>
+            </div>
+            <div>
+                <ul id="pending-sent-requests">
+                </ul>
+            </div>
+            <div id="friends">
+            </div>
+            <div style="height:300px;overflow-y:auto;border:1px solid black;padding:10px;">
+            <ul id='messages'>
             </ul>
+            </div><br>
+            <form onsubmit="sendMessage(event)">
+                <input
+                    type="text"
+                    id="messageText"
+                    placeholder="Message"
+                    autocomplete="off"
+                />
+                <button type="submit">Send</button>
+            </form>
         </div>
-        <div id="friends">
+        <br>
+        <div id="groups-div" hidden>
+            <input type="text" placeholder="Group Name">
+            <button onclick="createGroup()">Create Group</button>
         </div>
-        <div style="height:300px;overflow-y:auto;border:1px solid black;padding:10px;">
-        <ul id='messages'>
-        </ul>
-        </div><br>
-        <form onsubmit="sendMessage(event)">
-            <input
-                type="text"
-                id="messageText"
-                placeholder="Message"
-                autocomplete="off"
-            />
-            <button type="submit">Send</button>
-        </form>
+
         <script src="/config.js"></script>
         <script src="static/chat/script.js"></script>
+        <script src="static/chat/group.js"></script>
     </body>
 </html>
