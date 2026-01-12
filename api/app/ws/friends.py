@@ -14,6 +14,17 @@ async def handle_friend_request(manager: ConnectionManager, db: Session, sender_
     
     receiver_id = int(to_user_id)
 
+    try:
+        receiver = get_user_by_id(db, receiver_id)
+        if not receiver:
+            return
+    except:
+        await manager.send(sender_id,
+                           {
+                               "type": "Error",
+                               "message": "Couldn't Get friend"
+                           })
+
     request = get_friend_request_by_id(db, sender_id, receiver_id)
     if request:
         await manager.send(sender_id,
