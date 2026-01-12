@@ -36,7 +36,6 @@ async def handle_friend_request(manager: ConnectionManager, db: Session, sender_
 
     request = create_friend_request(db, sender_id, receiver_id)
     user = get_user_by_id(db, sender_id)
-    receiver = get_user_by_id(db, receiver_id)
 
     await manager.send(receiver_id, 
                        {
