@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.groups import Group
 
-def create_group(db: Session, name: str, created_by: int, is_private: bool = False) -> Group:
+def create_group(db: Session, name: str, created_by: int, is_private: bool = True) -> Group:
     group = Group(
         name = name,
         created_by=created_by,

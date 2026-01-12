@@ -33,6 +33,9 @@ ws.onmessage = function(event) {
         case "message_received":
             showReceivedMessage(data)
             break
+        case "load_group":
+            console.log(data)
+            break
         case "Error":
             console.log(data.message)
             break

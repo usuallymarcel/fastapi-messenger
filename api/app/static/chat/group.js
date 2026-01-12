@@ -14,11 +14,9 @@ function toggleGroup() {
 }
 
 function createGroup() {
-  const groupName = document.getElementById('group-name-input')
-  if (groupName.value.trim() <= 0) {
-    console.log('no group name')
+  const groupName = document.getElementById('group-name-input').value.trim()
+  if (groupName <= 0) {
     return
   }
-  console.log(groupName.value.trim())
-  ws.send(JSON.stringify({"type": "group_create", "group_name": groupName.textContent}))
+  ws.send(JSON.stringify({"type": "group_create", "group_name": groupName}))
 }
