@@ -11,13 +11,13 @@ from app.ws.manager import ConnectionManager
 async def handle_group_create(manager: ConnectionManager, db: Session, user_id: int, data: dict):
     try:
         group_name = data["group_name"]
-        
+        print(group_name)
 
         if not group_name:
             return
     
         is_private = True
-        if data["group_is_private"]:
+        if 'group_is_private' in data:
             is_private = data["group_is_private"]
         
 
