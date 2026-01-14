@@ -1,63 +1,6 @@
-let ws
-const API_URL = window.ENV.API_URL
+import { ws } from './ws.js'
 
-ws = new WebSocket(
-    (location.protocol === "https:" ? "wss://" : "ws://") +
-    location.host +
-    "/ws/chat"
-)
-
-ws.onmessage = function(event) {
-    const data = JSON.parse(event.data)
-
-    switch (data.type) {
-        case "friend_request_received":
-            showIncomingRequest(data)
-            break
-        case "friend_request_accepted":
-            removeRequestItem(data.request_id)
-            addFriend(data)
-            break
-        case "friend_request_rejected":
-            removeRequestItem(data.request_id)
-            break
-        case "friend_request_sent":
-            showSentRequest(data)
-            break
-        case "load_friend":
-            addFriend(data)
-            break
-        case "message_sent":
-            showMessage(data)
-            break
-        case "message_received":
-            showReceivedMessage(data)
-            break
-        case "load_group":
-            console.log(data)
-            break
-        case "Error":
-            console.log(data.message)
-            break
-    }
-}
-
-document.addEventListener('DOMContentLoaded', async function() {
-    const res = await fetch(API_URL + '/users/user', {
-        credentials: "include"
-    }).catch(err => {
-        console.error("Error: ", err)
-    })
-
-    const data = await res.json()
-    
-    
-    document.querySelector("#ws-id").textContent = data.email + ", ID: " + data.id
-
-    showLogoutButton()
-})
-
-function sendMessage(event) {
+export function sendMessage(event) {
     event.preventDefault()
     
     const input = document.getElementById("messageText")
@@ -100,13 +43,7 @@ function sendMessage(event) {
     input.value = ''
 }
 
-async function sendFriendRequest() {
-    const input = document.getElementById("friend-id-input")
-    
-    ws.send(JSON.stringify({"type": "friend_request", "to_user_id": input.value}))
-}
-
-function addFriend(data) {
+export function addFriend(data) {
     const friendsDiv = document.getElementById('friends')
 
     const label = document.createElement('label')
@@ -136,7 +73,7 @@ function addFriend(data) {
     friendsDiv.append(label)
 }
 
-function showIncomingRequest(data) {
+export function showIncomingRequest(data) {
     const requests = document.getElementById('pending-sent-requests')
 
     const item = document.createElement('li')
@@ -168,7 +105,7 @@ function showIncomingRequest(data) {
 }
 
 
-function showSentRequest(data) {
+export function showSentRequest(data) {
     const requests = document.getElementById('pending-received-requests')
     const request = document.createElement('li')
     request.classList.add('friend-request', 'friend-request--sent')
@@ -177,36 +114,15 @@ function showSentRequest(data) {
     requests.appendChild(request)
 }
 
-function acceptFriendRequest(requestId) {
+export function acceptFriendRequest(requestId) {
     ws.send(JSON.stringify({"type": "friend_accept", "request_id": requestId}))
 }
 
-function rejectFriendRequest(requestId) {
+export function rejectFriendRequest(requestId) {
     ws.send(JSON.stringify({"type": "friend_reject", "request_id": requestId}))
 }
 
-const showLogoutButton = () => {
-    const logoutDiv = document.getElementById('logout-div')
-    const button = document.createElement('button')
-    button.addEventListener("click", logout)
-    button.textContent = "Logout"
-    logoutDiv.append(button)
-}
-
-async function logout() {
-    const res = await fetch(API_URL + '/users/logout', {
-        method: "POST",
-        credentials: "include"
-    })
-
-    if (!res.ok) return
-
-    const data = await res.json()
-
-    window.location.href = "/"
-}
-
-function showMessage(data) {
+export function showMessage(data) {
     const messagesDiv = document.getElementById('messages')
     const li = document.createElement('li')
     li.textContent = data.content
@@ -214,7 +130,7 @@ function showMessage(data) {
     li.scrollIntoView({ behavior: 'smooth', block: 'end' })
 }
 
-function showReceivedMessage(data) {
+export function showReceivedMessage(data) {
     const messagesDiv = document.getElementById('messages')
 
     //only show if this friend is currently selected
@@ -245,12 +161,12 @@ function showReceivedMessage(data) {
     li.scrollIntoView({ behavior: 'smooth', block: 'end' })
 }
 
-function clearMessages() {
+export function clearMessages() {
     const messagesDiv = document.getElementById('messages')
     messagesDiv.innerHTML = ''
 }
 
-function removeRequestItem(requestId) {
+export function removeRequestItem(requestId) {
     const item = document.querySelector(
         `.friend-request[data-request-id="${requestId}"]`
     )
@@ -258,4 +174,10 @@ function removeRequestItem(requestId) {
     if (item) {
         item.remove()
     }
+}
+
+export async function sendFriendRequest() {
+    const input = document.getElementById("friend-id-input")
+    
+    ws.send(JSON.stringify({"type": "friend_request", "to_user_id": input.value}))
 }

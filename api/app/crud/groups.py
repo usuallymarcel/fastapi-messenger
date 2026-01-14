@@ -25,4 +25,4 @@ def update_is_private(db: Session, id: int, is_private: bool) -> None:
 
 def delete_group_by_id(db: Session, id: int) -> None:
     db.query(Group).filter(Group.id == id).delete()
-    db.commit()
+    db.commit()    

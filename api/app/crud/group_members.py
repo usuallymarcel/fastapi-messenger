@@ -15,3 +15,6 @@ def create_group_member(db: Session, group_id: int, user_id: int, is_admin: bool
 
 def get_group_members(db: Session, group_id: int) -> list[GroupMember]:
   return db.query(GroupMember).filter(group_id == group_id).all()
+
+def get_all_group_memberships_by_user_id(db: Session, user_id: int) -> list[GroupMember]:
+  return db.query(GroupMember).filter(GroupMember.user_id == user_id).all()

@@ -7,14 +7,14 @@
     <body>
         <div id="logout-div"></div>
         <br>
-        <button onclick="toggleGroup()" id="group-toggle-button">Open Groups</button>    
+        <button id="group-toggle-button">Open Groups</button>    
         <br>
         <div id="friends-div">
             <p id="ws-id"></p>
             <br>
             <div id="friend-request-div">
                 <input type="text" id="friend-id-input" placeholder="ID"/>
-                <button onclick="sendFriendRequest()">Send Friend Request</button>
+                <button id="send-friend-request-btn">Send Friend Request</button>
                 <ul id="pending-received-requests"></ul>
             </div>
             <div>
@@ -27,7 +27,7 @@
             <ul id='messages'>
             </ul>
             </div><br>
-            <form onsubmit="sendMessage(event)">
+            <form id="message-form">
                 <input
                     type="text"
                     id="messageText"
@@ -40,11 +40,14 @@
         <br>
         <div id="groups-div" hidden>
             <input type="text" placeholder="Group Name" id="group-name-input">
-            <button onclick="createGroup()">Create Group</button>
+            <button id="create-group-btn">Create Group</button>
+            <div>
+                <ul id="group-list">
+                </ul>
+            </div>
         </div>
 
         <script src="/config.js"></script>
-        <script src="static/chat/script.js"></script>
-        <script src="static/chat/group.js"></script>
+        <script type="module" src="static/chat/main.js"></script>
     </body>
 </html>

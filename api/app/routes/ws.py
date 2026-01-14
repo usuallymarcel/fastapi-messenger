@@ -52,6 +52,8 @@ async def handle_ws_event(db: Session, user_id: int, data: dict):
             await handle_read_message(manager, db, user_id, data)
         case "group_create":
             await handle_group_create(manager, db, user_id, data)
+        case "group_get_messages":
+            print('get messages')
         case _:
             raise ValueError("Unknown event type")
         

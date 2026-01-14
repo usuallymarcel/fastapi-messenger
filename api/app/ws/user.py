@@ -1,3 +1,5 @@
+from app.crud.groups import get_group_by_id
+from app.crud.group_members import get_all_group_memberships_by_user_id
 from app.crud.friend_request import get_received_friend_requests, get_sent_friend_requests
 from app.crud.friends import get_all_friends_by_id
 from app.crud.messages import get_unread_message_count_by_friend
@@ -47,4 +49,18 @@ async def load_user_data(manager: ConnectionManager, db: Session, user_id: int):
                                "user_id": friend_id,
                                "username": friend.email,
                                "unread_count": count,
+                           })
+        
+    groups_memberships = get_all_group_memberships_by_user_id(db, user_id) 
+
+    for membership in groups_memberships:
+        group = get_group_by_id(db, membership.group_id)
+
+        await manager.send(user_id, 
+                           {
+                               "type": "load_group",
+                               "group_id": group.id,
+                               "group_name": group.name,
+                               "group_user_id": membership.id,
+                               "is_admin": membership.is_admin,
                            })
