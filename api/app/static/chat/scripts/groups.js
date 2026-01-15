@@ -17,13 +17,13 @@ export function toggleGroup() {
 
 export function createGroup() {
   const groupName = document.getElementById('group-name-input').value.trim()
-  if (groupName <= 0) {
+  if (groupName.length === 0) {
     return
   }
   ws.send(JSON.stringify({"type": "group_create", "group_name": groupName}))
 }
 
-export function load_group(data) {
+export function loadGroup(data) {
   const groupDiv = document.getElementById('group-list')
 
   const label = document.createElement('label')
@@ -31,7 +31,7 @@ export function load_group(data) {
 
   const input = document.createElement('input')
   input.type = 'radio'
-  input.name = 'friends'
+  input.name = 'groups'
   input.value = data.group_id
 
   const name = document.createElement('span')
@@ -50,4 +50,27 @@ export function load_group(data) {
 
   label.append(input, name, count)
   groupDiv.append(label)
+}
+
+function getSelectedGroupId() {
+  const selected = document.querySelector('#group-list input[type="radio"]:checked')
+  return selected ? selected.value : null
+}
+
+export function sendGroupMessage() {
+  const input = document.getElementById('group-messages-text')
+  const message = input.value.trim()
+  const groupId = getSelectedGroupId()
+
+  if (!groupId || message.length === 0) {
+    return
+  }
+
+  ws.send(JSON.stringify({
+    type: "group_message_send",
+    group_id: groupId,
+    group_message: message
+  }))
+
+  input.value = ''
 }

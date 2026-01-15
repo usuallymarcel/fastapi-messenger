@@ -1,8 +1,6 @@
 import { ws } from './ws.js'
 
-export function sendMessage(event) {
-    event.preventDefault()
-    
+export function sendMessage() {    
     const input = document.getElementById("messageText")
     const friends = document.getElementsByName('friends')
 

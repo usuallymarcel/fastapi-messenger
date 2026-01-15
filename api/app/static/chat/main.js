@@ -10,9 +10,10 @@ import {
 } from "./scripts/friends.js"
 
 import {
-    load_group,
+    loadGroup,
     toggleGroup,
-    createGroup
+    createGroup,
+    sendGroupMessage
 } from "./scripts/groups.js"
 
 import { ws, initWebSocket } from "./scripts/ws.js"
@@ -48,7 +49,7 @@ ws.onmessage = function(event) {
             showReceivedMessage(data)
             break
         case "load_group":
-            load_group(data)
+            loadGroup(data)
             break
         case "Error":
             console.log(data.message)
@@ -83,8 +84,32 @@ document.addEventListener('DOMContentLoaded', async function() {
         .addEventListener("click", createGroup)
     
     document
-        .getElementById("message-form")
-        .addEventListener("submit", sendMessage)
+        .getElementById('messageText')
+        .addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault()
+                sendMessage()
+            }
+        })
+
+    document
+        .getElementById("send-message-button")
+        .addEventListener("click", sendMessage)
+
+    document
+        .getElementById('group-messages-text')
+        .addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault()
+                sendGroupMessage()
+            }
+        })
+
+    document
+        .getElementById("group-message-send-button")
+        .addEventListener("click", sendGroupMessage)
+
+    
 })
 
 function showLogoutButton() {

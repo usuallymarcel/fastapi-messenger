@@ -7,14 +7,14 @@
     <body>
         <div id="logout-div"></div>
         <br>
-        <button id="group-toggle-button">Open Groups</button>    
+        <button type="button" id="group-toggle-button">Open Groups</button>    
         <br>
+        <p id="ws-id"></p>
         <div id="friends-div">
-            <p id="ws-id"></p>
             <br>
             <div id="friend-request-div">
                 <input type="text" id="friend-id-input" placeholder="ID"/>
-                <button id="send-friend-request-btn">Send Friend Request</button>
+                <button type="button" id="send-friend-request-btn">Send Friend Request</button>
                 <ul id="pending-received-requests"></ul>
             </div>
             <div>
@@ -27,24 +27,37 @@
             <ul id='messages'>
             </ul>
             </div><br>
-            <form id="message-form">
+            <!-- <form id="message-form"> -->
                 <input
                     type="text"
                     id="messageText"
                     placeholder="Message"
                     autocomplete="off"
                 />
-                <button type="submit">Send</button>
-            </form>
+                <!-- <button type="submit">Send</button> -->
+                <button type="button" id="send-message-button">Send</button>
+            <!-- </form> -->
         </div>
         <br>
         <div id="groups-div" hidden>
             <input type="text" placeholder="Group Name" id="group-name-input">
-            <button id="create-group-btn">Create Group</button>
-            <div>
-                <ul id="group-list">
-                </ul>
+            <button type="button" id="create-group-btn">Create Group</button><br>
+            <div id="group-list">
             </div>
+            <div style="height:300px;overflow-y:auto;border:1px solid black;padding:10px;">
+            <ul id='group-messages'>
+            </ul>
+            </div><br>
+            <!-- <form id="group-message-form"> -->
+                <input
+                    type="text"
+                    id="group-messages-text"
+                    placeholder="Message"
+                    autocomplete="off"
+                />
+                <button type="button" id="group-message-send-button">Send</button>
+                <!-- <button type="submit">Send</button> -->
+            <!-- </form> -->
         </div>
 
         <script src="/config.js"></script>
