@@ -23,6 +23,11 @@ export function createGroup() {
   ws.send(JSON.stringify({"type": "group_create", "group_name": groupName}))
 }
 
+export function clearMessages() {
+    const groupMessageDiv = document.getElementById('group-messages')
+    groupMessageDiv.innerHTML = ''
+}
+
 export function loadGroup(data) {
   const groupDiv = document.getElementById('group-list')
 
@@ -40,8 +45,8 @@ export function loadGroup(data) {
   count.classList.add('message-count')
   // count.textContent = data.unread_count
   name.textContent = data.group_name
-
   input.addEventListener('change', () => {
+    clearMessages()
     ws.send(JSON.stringify({
       type: "group_get_messages", 
       group_id: input.value
@@ -67,10 +72,34 @@ export function sendGroupMessage() {
   }
 
   ws.send(JSON.stringify({
-    type: "group_message_send",
+    type: "group_message",
     group_id: groupId,
     group_message: message
   }))
 
   input.value = ''
+}
+
+export function showReceivedGroupMessage(data) {
+  const groupMessagesDiv = document.getElementById('group-messages')
+
+  const groups = document.getElementsByName('groups')
+
+  let selectedGroupId = null
+
+  for (const g of groups) {
+    if (g.checked) {
+      selectedGroupId = g.value
+      break
+    }
+  }
+
+  if (selectedGroupId !== String(data.from)) {
+    return
+  }
+
+  const li = document.createElement('li')
+  li.textContent = data.content
+  groupMessagesDiv.appendChild(li)
+  li.scrollIntoView({ behavior: 'smooth', block: 'end' })
 }

@@ -13,7 +13,8 @@ import {
     loadGroup,
     toggleGroup,
     createGroup,
-    sendGroupMessage
+    sendGroupMessage,
+    showReceivedGroupMessage
 } from "./scripts/groups.js"
 
 import { ws, initWebSocket } from "./scripts/ws.js"
@@ -24,6 +25,21 @@ initWebSocket()
 
 ws.onmessage = function(event) {
     const data = JSON.parse(event.data)
+
+    console.log(data)
+
+    if (data.type.toLowerCase().includes('group')) {
+        switch (data.type) {
+            case "load_group":
+                loadGroup(data)
+                break
+            case "group_message_received":
+                showReceivedGroupMessage(data)
+                break
+        }
+        return
+    }
+        
 
     switch (data.type) {
         case "friend_request_received":
@@ -47,9 +63,6 @@ ws.onmessage = function(event) {
             break
         case "message_received":
             showReceivedMessage(data)
-            break
-        case "load_group":
-            loadGroup(data)
             break
         case "Error":
             console.log(data.message)

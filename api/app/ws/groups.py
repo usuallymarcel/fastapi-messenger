@@ -1,17 +1,14 @@
-from app.crud.group_members import create_group_member
+from app.crud.users import get_user_by_id
+from app.crud.group_messages import create_group_message, get_messages_by_group
+from app.crud.group_members import create_group_member, get_group_members, get_membership_by_group_id_user_id
 from app.crud.groups import create_group
-from app.crud.users import get_user_by_id
 from sqlalchemy.orm import Session
-from app.crud.friend_request import create_friend_request, get_friend_request, update_friend_request_status, get_friend_request_by_id, get_received_friend_requests, get_sent_friend_requests
-from app.crud.friends import create_friend
-from app.crud.users import get_user_by_id
-from app.models.friend_request import FriendRequest, FriendStatus
 from app.ws.manager import ConnectionManager
+from app.utils.format_time import format_to_nz_time
 
 async def handle_group_create(manager: ConnectionManager, db: Session, user_id: int, data: dict):
     try:
         group_name = data["group_name"]
-        print(group_name)
 
         if not group_name:
             return
@@ -37,51 +34,89 @@ async def handle_group_create(manager: ConnectionManager, db: Session, user_id: 
                         "type": "Error",
                         "message": "Couldn't Create Group"
                     })
-
-async def handle_friend_request(manager: ConnectionManager, db: Session, sender_id: int, data: dict):
-    to_user_id = data["to_user_id"]
-
-    if not to_user_id:
-        return
-    
-    receiver_id = int(to_user_id)
-
+        
+async def handle_get_group_messages(manager: ConnectionManager, db: Session, user_id: int, data: dict):
     try:
-        receiver = get_user_by_id(db, receiver_id)
-        if not receiver:
+        group_id = data["group_id"]
+
+        if not group_id:
             return
+        
+        group_id = int(group_id)
+
+        group_member = get_membership_by_group_id_user_id(db, user_id, group_id)
+        if not group_member:
+            await manager.send(user_id, 
+                               {
+                                   "type": "Error",
+                                   "message": "invalid group id"
+                               })
+            return
+
+        group_messages = get_messages_by_group(db, group_member.group_id)
+
+        for message in group_messages:
+            sender = get_user_by_id(db, message.sender_id)
+            await manager.send(user_id, 
+                               {
+                                   "type": "group_message_received",
+                                   "content": f"{format_to_nz_time(message.created_at)} - {sender.email}: {message.content}",
+                                   "from": group_id
+                               })
+
     except:
-        await manager.send(sender_id,
+        await manager.send(user_id, 
                            {
-                               "type": "Error",
-                               "message": "Couldn't Get friend"
+                                "type": "Error",
+                                "message": "Couldn't Get Group Messages"
                            })
 
-    request = get_friend_request_by_id(db, sender_id, receiver_id)
-    if request:
-        await manager.send(sender_id,
-                           {
-                               "type": "Error",
-                               "message": "Friend Request Already Exists",
-                           })
-        return
+async def handle_group_message(manager: ConnectionManager, db: Session, user_id: int, data: dict):
+    try:
+        group_id = data["group_id"]
+        group_message = data["group_message"]
 
-    request = create_friend_request(db, sender_id, receiver_id)
-    user = get_user_by_id(db, sender_id)
+        group_id = int(group_id)
+        group_message = str(group_message)
 
-    await manager.send(receiver_id, 
-                       {
-                           "type": "friend_request_received",
-                           "from_user_id": sender_id,
-                           "request_id": request.id,
-                           "username": user.email,
-                       })
-    
-    await manager.send(sender_id, 
+        group_member = get_membership_by_group_id_user_id(db, user_id, group_id)
+
+        if not group_member:
+            await manager.send(user_id, 
                     {
-                        "type": "friend_request_sent",
-                        "to_user_id": request.receiver_id,
-                        "request_id": request.id,
-                        "username": receiver.email,
+                        "type": "Error",
+                        "message": "invalid group id"
                     })
+            return
+        
+        message = create_group_message(db, group_id, user_id, group_message)
+
+        sender = get_user_by_id(db, user_id)
+
+        group_members = get_group_members(db, group_id)
+
+        # await manager.send(user_id, 
+        #                    {
+        #                        "type": "group_message_sent",
+        #                        "content": f"{format_to_nz_time(message.created_at)} - {sender.email}: {message.content}",
+        #                        "to": group_id
+        #                    })
+        
+        for member in group_members:
+            # if (member.id == user_id): continue
+            
+            await manager.send(member.user_id, 
+                               {
+                                   "type": "group_message_received",
+                                   "content": f"{format_to_nz_time(message.created_at)} - {sender.email}: {message.content}",
+                                   "from": group_id,
+                               })
+
+    except:
+        await manager.send(user_id, 
+                          {
+                              "type": "Error",
+                              "Message": "Couldn't Send Group Message"
+                          })
+
     

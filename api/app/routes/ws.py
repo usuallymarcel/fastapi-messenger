@@ -1,4 +1,4 @@
-from app.ws.groups import handle_group_create
+from app.ws.groups import handle_get_group_messages, handle_group_create, handle_group_message
 from app.ws.friends import handle_friend_accept, handle_friend_reject, handle_friend_request
 from app.ws.messages import handle_get_messages, handle_message, handle_read_message
 from app.ws.user import load_user_data
@@ -54,6 +54,10 @@ async def handle_ws_event(db: Session, user_id: int, data: dict):
             await handle_group_create(manager, db, user_id, data)
         case "group_get_messages":
             print('get messages')
+            await handle_get_group_messages(manager, db, user_id, data)
+        case "group_message":
+            print('group message send', data)
+            await handle_group_message(manager, db, user_id, data)
         case _:
             raise ValueError("Unknown event type")
         

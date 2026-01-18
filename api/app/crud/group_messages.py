@@ -14,7 +14,9 @@ def create_group_message(db: Session, group_id: int, sender_id: int, content: st
     return group_message
 
 def get_messages_by_group(db: Session, group_id: int, take: int = 10) -> list[GroupMessage]:
-    return db.query(GroupMessage
+    messages = db.query(GroupMessage
                         ).filter(GroupMessage.group_id == group_id
                         ).order_by(GroupMessage.created_at.desc()).limit(take).all()
+    
+    return list(reversed(messages))
 
