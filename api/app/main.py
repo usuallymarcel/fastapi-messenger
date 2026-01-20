@@ -9,13 +9,14 @@ from app.dependencies import get_db
 from pathlib import Path
 import os
 from app.config import settings
-from app.routes import ws, users, friends
+from app.routes import ws, users, friends, groups
 
 app = FastAPI()
 
 app.include_router(users.router)
 app.include_router(ws.router)
 app.include_router(friends.router)
+app.include_router(groups.router)
 
 app.add_middleware(
     CORSMiddleware,
