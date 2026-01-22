@@ -146,7 +146,7 @@ async function logout() {
 
     if (!res.ok) return
 
-    const data = await res.json()
+    // const data = await res.json()
 
     window.location.href = "/"
 }

@@ -39,13 +39,8 @@ async function authenticate(type) {
 
     const data = await res.json()
 
-    console.log(data)
-
-    if (data.redirect) {
-        window.location.href = data.redirect
-    }
-
     if (data.verified === true) {
-        window.location.href = "/chat"
+        window.location.href = data.redirect ?? "/chat"
+        return
     }
 }
