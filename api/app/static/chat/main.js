@@ -14,7 +14,8 @@ import {
     toggleGroup,
     createGroup,
     sendGroupMessage,
-    showReceivedGroupMessage
+    showReceivedGroupMessage,
+    createGroupInvite
 } from "./scripts/groups.js"
 
 import { ws, initWebSocket } from "./scripts/ws.js"
@@ -121,6 +122,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     document
         .getElementById("group-message-send-button")
         .addEventListener("click", sendGroupMessage)
+
+    document
+        .getElementById("create-invite-link")
+        .addEventListener("click", createGroupInvite)
 
     
 })

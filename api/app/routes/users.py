@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, Request
 from sqlalchemy.orm import Session
-
+from fastapi.responses import FileResponse, RedirectResponse
 from app.dependencies import get_db
 from app.schemas.user import UserCreate, UserRead, credentials
 from app.crud.users import get_user_by_email, create_user, get_users, get_user_by_id
@@ -11,7 +11,7 @@ from app.utils.session_token import get_session_from_request, refresh_session_if
 router = APIRouter(prefix="/users", tags=["users"])
 
 @router.post("/login")
-def login(data: credentials, response: Response, db: Session = Depends(get_db)):
+def login(request: Request, data: credentials, response: Response, db: Session = Depends(get_db)):
     user = get_user_by_email(db, data.email)
 
     if not user:
@@ -31,10 +31,17 @@ def login(data: credentials, response: Response, db: Session = Depends(get_db)):
         max_age=60 * 60 * 24
     )
     
+    invite = request.cookies.get("pending_invite")
+    if invite:
+        return {
+            "verified": True,
+            "redirect": f"/groups/join/{invite}"
+        }
+    
     return {"verified": True, "message": "Password correct"}
 
 @router.post("/sign_up")
-def sign_up(data: credentials, response: Response, db: Session = Depends(get_db)):
+def sign_up(request: Request, data: credentials, response: Response, db: Session = Depends(get_db)):
     user = get_user_by_email(db, data.email)
     
     if user:
@@ -52,6 +59,13 @@ def sign_up(data: credentials, response: Response, db: Session = Depends(get_db)
         samesite="lax",
         max_age=60 * 60 * 24
     )
+
+    invite = request.cookies.get("pending_invite")
+    if invite:
+        return {
+            "verified": True,
+            "redirect": f"/groups/join/{invite}"
+        }
 
     return {"verified": True, "created": True, "message": "Account creation Succesful"}
     

@@ -19,7 +19,8 @@ def create_group_invite(db: Session, user_id: int, max_uses: int, group_id: int)
     return groupInvite
 
 def update_group_invite_uses_by_token(db: Session, uses: int, token: str) -> None:
-    db.query(GroupInvite).filter(GroupInvite.token == token).update(GroupInvite.uses_count == uses)
+    db.query(GroupInvite).filter(GroupInvite.token == token).update({GroupInvite.uses_count: uses})
+
     db.commit()
 
 def get_group_invite_by_token(db: Session, token: str) -> GroupInvite:

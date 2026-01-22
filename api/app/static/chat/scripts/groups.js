@@ -1,5 +1,7 @@
 import { ws } from './ws.js'
 
+const API_URL = window.ENV.API_URL
+
 export function toggleGroup() {
   const groupDiv = document.getElementById('groups-div')
   const friendDiv = document.getElementById('friends-div')
@@ -102,4 +104,31 @@ export function showReceivedGroupMessage(data) {
   li.textContent = data.content
   groupMessagesDiv.appendChild(li)
   li.scrollIntoView({ behavior: 'smooth', block: 'end' })
+}
+
+export async function createGroupInvite() {
+  const groupId = getSelectedGroupId()
+
+  if (!groupId) return
+
+  const res = await fetch(API_URL + `/groups/${groupId}/invite`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ max_uses : 5 })
+  }).catch(err => {
+      console.error("Error: ", err)
+  })
+
+  const inviteLink = await res.json()
+
+  if (!inviteLink) {
+    console.error('No invite link created')
+  }
+
+  const groupInviteElement = document.getElementById('invite-link')
+
+  groupInviteElement.textContent = inviteLink.invite_link
 }
