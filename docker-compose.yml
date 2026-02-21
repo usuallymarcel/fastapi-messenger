@@ -31,7 +31,7 @@ services:
       - db
     labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.api.rule=Host(`api.marcel.co.nz`)"
+        - "traefik.http.routers.api.rule=Host(`chat.marcel.co.nz`)"
         - "traefik.http.routers.api.entrypoints=websecure"
         - "traefik.http.routers.api.tls=true"
         - "traefik.http.routers.api.tls.certresolver=myresolver"
