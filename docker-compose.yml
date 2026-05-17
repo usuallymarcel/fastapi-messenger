@@ -17,8 +17,8 @@ services:
         - "traefik.http.routers.chatapi.tls.certresolver=myresolver"
         - "traefik.http.services.chatapi.loadbalancer.server.port=8000"
         
-        - "traefik.http.middlewares.chatapi-ratelimit.ratelimit.average=100"
-        - "traefik.http.middlewares.chatapi-ratelimit.ratelimit.burst=50"
+        - "traefik.http.middlewares.chatapi-ratelimit.ratelimit.average=10"
+        - "traefik.http.middlewares.chatapi-ratelimit.ratelimit.burst=20"
 
         - "traefik.http.middlewares.chatapi-buffer.buffering.maxRequestBodyBytes=5242880"
 
@@ -34,8 +34,8 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql
-    # ports:
-    #   - 5432:5432
+    ports:
+      - 5432:5432
     networks:
       - proxy
 
