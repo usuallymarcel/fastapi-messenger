@@ -20,7 +20,7 @@ app.include_router(groups.router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000", "api.marcel.co.nz"],
+    allow_origins=["http://localhost:8000", "chat.marcel.co.nz"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
